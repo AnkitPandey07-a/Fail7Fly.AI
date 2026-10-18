@@ -1,34 +1,36 @@
+
 import express from "express";
 import "dotenv/config";
-import { connectDB } from "./configs/db.js";
-import authRouter from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
 
+import { connectDB } from "./configs/db.js";
+import authRouter from "./routes/auth.route.js";
 
 const app = express();
-
-app.use(express.json())
-app.use(cookieParser())
-
-
 const PORT = process.env.PORT || 6000;
 
-app.get("/", (reg, res) =>{
-    res.send("hello from Auth Service");
-})
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
 
+// Health check
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Fail7Fly.AI Auth Service is running",
+  });
+});
 
+// Authentication routes
+app.use("/", authRouter);
 
-// use krenge router ko
-app.use("/",authRouter)
-
-
+// Start server after connecting to MongoDB
 async function startServer() {
   try {
     await connectDB();
     console.log("Connected to MongoDB");
 
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Auth service is running on port ${PORT}`);
     });
   } catch (error) {
