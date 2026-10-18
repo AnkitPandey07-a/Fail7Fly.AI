@@ -1,0 +1,17 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Firebase credentials
+backend/services/auth/serviceAccountKey.json
+
+# Uploaded resumes
+backend/services/resume/uploads/
+
+# Dependencies and builds
+node_modules/
+dist/
+build/
+.venv/
+__pycache__/

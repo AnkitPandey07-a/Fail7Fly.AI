@@ -1,0 +1,7 @@
+{
+    "github.copilot.chat.askAgent.additionalTools": [
+        "."
+    ],
+    "github.copilot.chat.agent.autoFix": true,
+    "markdown.validate.enabled": true
+}

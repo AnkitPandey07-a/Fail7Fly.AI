@@ -1,0 +1,454 @@
+@import "tailwindcss";
+
+/* =========================================
+   1. GLOBAL APP THEME
+   ========================================= */
+
+:root {
+    font-family: Inter, "Segoe UI", sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: rgba(255, 255, 255, 0.95);
+    background: #020817;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scrolling for the application */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Main application background */
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: #020817;
+}
+
+/* Consistent sizing */
+* {
+    box-sizing: border-box;
+}
+
+/* Remove default link underline */
+a {
+    text-decoration: none;
+}
+
+/* Consistent form-control fonts */
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+/* =========================================
+   2. RESUME PRINT TEMPLATE
+   Hidden on screen, visible in print mode.
+   ========================================= */
+
+.resume-print-root {
+    display: none;
+}
+
+/* =========================================
+   3. PROFESSIONAL RESUME PDF STYLES
+   ========================================= */
+
+@media print {
+
+    /* A4 paper with professional margins */
+    @page {
+        size: A4;
+        margin: 12mm 15mm;
+    }
+
+    /* White paper and black text in PDF */
+    html,
+    body {
+        width: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: #111111 !important;
+        background: #ffffff !important;
+
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 10pt;
+        line-height: 1.35;
+
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Hide all normal application content */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Show only the printable resume */
+    .resume-print-root,
+    .resume-print-root * {
+        visibility: visible;
+    }
+
+    .resume-print-root {
+        display: block !important;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        margin: 0;
+        padding: 0;
+
+        color: #111111 !important;
+        background: #ffffff !important;
+
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 10pt;
+        line-height: 1.35;
+    }
+
+    /* =====================================
+       4. NAME AND CONTACT HEADER
+       Centered and bold, like the reference.
+       ===================================== */
+
+    .resume-header {
+        display: block;
+        margin: 0 0 12pt;
+        padding: 0;
+        text-align: center;
+    }
+
+    .resume-header h1 {
+        margin: 0 0 3pt;
+
+        color: #111111 !important;
+        font-size: 19pt;
+        font-weight: 700;
+        line-height: 1.2;
+        text-align: center;
+
+        overflow-wrap: anywhere;
+    }
+
+    .resume-job-title {
+        margin: 0 0 4pt;
+
+        color: #111111 !important;
+        font-size: 10.5pt;
+        font-weight: 700;
+        line-height: 1.3;
+        text-align: center;
+
+        overflow-wrap: anywhere;
+    }
+
+    .resume-contact {
+        margin: 2pt 0;
+
+        color: #222222 !important;
+        font-size: 8.5pt;
+        line-height: 1.4;
+        text-align: center;
+
+        overflow-wrap: anywhere;
+    }
+
+    /* =====================================
+       5. RESUME SECTION HEADINGS
+       Example: TECHNICAL SKILLS
+       ===================================== */
+
+    .resume-section {
+        display: block;
+        margin: 10pt 0 0;
+        padding: 0;
+
+        color: #111111 !important;
+        background: #ffffff !important;
+
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+
+    .resume-section h2 {
+        margin: 0 0 5pt;
+        padding: 0 0 2pt;
+
+        color: #111111 !important;
+        background: #ffffff !important;
+
+        border: 0;
+        border-bottom: 1px solid #333333;
+
+        font-size: 10.5pt;
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: 0.2px;
+        text-transform: uppercase;
+
+        /* Keep the heading with the content below it */
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    /* =====================================
+       6. BULLET POINTS
+       Proper bullets and left indentation.
+       ===================================== */
+
+    .resume-section ul {
+        display: block;
+
+        margin: 3pt 0 0;
+        padding-left: 16pt;
+
+        list-style-type: disc;
+        list-style-position: outside;
+    }
+
+    .resume-section li {
+        display: list-item;
+
+        margin: 0 0 4pt;
+        padding-left: 1pt;
+
+        color: #111111 !important;
+        font-size: 10pt;
+        line-height: 1.35;
+
+        overflow-wrap: anywhere;
+
+        /* Avoid splitting an individual bullet */
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* =====================================
+       7. SUMMARY AND GENERAL TEXT
+       ===================================== */
+
+    .resume-summary,
+    .resume-body {
+        margin: 3pt 0;
+        padding: 0;
+
+        color: #111111 !important;
+        font-size: 10pt;
+        line-height: 1.4;
+
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    /* =====================================
+       8. EXPERIENCE AND PROJECT ENTRIES
+       ===================================== */
+
+    .resume-entries {
+        display: block;
+        margin-top: 3pt;
+    }
+
+    .resume-entry {
+        margin: 0 0 7pt;
+        padding: 0;
+
+        color: #111111 !important;
+
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+
+    /* Project name, company, or entry title */
+    .resume-entry-title {
+        margin: 0 0 2pt;
+
+        color: #111111 !important;
+        font-size: 10pt;
+        font-weight: 700;
+        line-height: 1.35;
+
+        overflow-wrap: anywhere;
+
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    /* Description and technology details */
+    .resume-entry-line {
+        margin: 1pt 0;
+
+        color: #111111 !important;
+        font-size: 10pt;
+        line-height: 1.35;
+
+        overflow-wrap: anywhere;
+    }
+
+    /* Bullet marker for experience/project description lines */
+    .resume-bullet-line {
+        position: relative;
+        padding-left: 12pt;
+    }
+
+    .resume-bullet-line::before {
+        content: "•";
+
+        position: absolute;
+        left: 2pt;
+        top: 0;
+
+        color: #111111 !important;
+    }
+
+    /* Category labels such as Programming Languages: */
+    .resume-print-root strong {
+        color: #111111 !important;
+        font-weight: 700;
+    }
+
+    /* =====================================
+       9. LINKS
+       Print URLs as normal black text.
+       ===================================== */
+
+    .resume-print-root a {
+        color: #111111 !important;
+        text-decoration: none !important;
+    }
+
+    /* =====================================
+       10. HIDE APPLICATION UI
+       Only the printable resume should appear.
+       ===================================== */
+
+    .resume-editor,
+    button,
+    input,
+    textarea,
+    select,
+    nav,
+    aside {
+        display: none !important;
+    }
+
+    /* Remove UI effects from the document */
+    .resume-print-root * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+}
+/* Live resume preview */
+.resume-live-page {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    background: #fff;
+    color: #111827;
+}
+
+.resume-live-page *,
+.resume-print-root * {
+    box-sizing: border-box;
+}
+
+.resume-live-page .resume-section {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.resume-live-page .resume-section h2 {
+    margin-top: 0;
+    letter-spacing: 0.035em;
+}
+
+.resume-live-page .resume-summary {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.resume-live-page .resume-bullets,
+.resume-print-root .resume-bullets {
+    margin: 2px 0 0;
+    padding-left: 15px;
+    list-style: disc;
+}
+
+.resume-live-page .resume-bullets li,
+.resume-print-root .resume-bullets li {
+    margin: 0 0 2px;
+    padding-left: 1px;
+    overflow-wrap: anywhere;
+}
+
+.resume-live-page .resume-skills {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 3px;
+}
+
+.resume-live-page .resume-skills li {
+    margin-bottom: 3px;
+    line-height: 1.45;
+}
+
+.resume-live-page .resume-entries,
+.resume-print-root .resume-entries {
+    min-width: 0;
+}
+
+.resume-live-page .resume-entry,
+.resume-print-root .resume-entry {
+    margin: 0 0 7px;
+    min-width: 0;
+    break-inside: avoid;
+}
+
+.resume-live-page .resume-entry-title,
+.resume-print-root .resume-entry-title {
+    margin: 3px 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.resume-live-page .resume-entry-line,
+.resume-print-root .resume-entry-line {
+    margin: 2px 0;
+    overflow-wrap: anywhere;
+}
+
+.resume-live-page .resume-bullet-line::before,
+.resume-print-root .resume-bullet-line::before {
+    content: "• ";
+    font-weight: 400;
+}
+
+/* Prevent grid children from forcing horizontal overflow */
+.resume-editor,
+.resume-editor form,
+.resume-editor aside {
+    min-width: 0;
+}
+
+@media print {
+    .resume-live-page {
+        display: none !important;
+    }
+}
