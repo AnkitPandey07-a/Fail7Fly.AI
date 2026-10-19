@@ -11,15 +11,21 @@ import { getCurrentUser } from "./controllers/user.controller.js";
 import { proxyWithHeaders } from "./utils/proxyWithHeaders.js";
 
 const app = express();
+
+// Render automatically provides PORT.
+// Locally, the Gateway will use port 8000.
 const PORT = process.env.PORT || 8000;
 
-// Allowed frontend origins
+// Allowed frontend origins.
+// FRONTEND_URL should be set to the deployed Vercel URL in Render.
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://127.0.0.1:5173",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-// CORS configuration
+// CORS configuration.
+// Credentials are enabled for cookie-based authentication.
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -34,32 +40,37 @@ app.use(
   })
 );
 
-// Middleware
+// Parse JSON request bodies.
 app.use(express.json());
+
+// Log incoming HTTP requests.
 app.use(morgan("dev"));
+
+// Parse cookies from incoming requests.
 app.use(cookieParser());
 
-// Health check
-app.get("/", (req, res) => {
+// Health-check endpoint.
+// Open the Gateway URL in a browser to verify it is running.
+app.get("/", (_req, res) => {
   res.status(200).json({
     success: true,
     message: "Fail7Fly.AI Gateway is running",
   });
 });
 
-// Validate required service URLs before starting
+// Initial deployment configuration:
+// Only Auth is required right now.
+// Other services will be configured after they are deployed.
 const requiredServices = {
   Auth_SERVICE_URL: process.env.Auth_SERVICE_URL,
-  Interview_SERVICE_URL: process.env.Interview_SERVICE_URL,
-  Resume_SERVICE_URL: process.env.Resume_SERVICE_URL,
-  Roadmap_SERVICE_URL: process.env.Roadmap_SERVICE_URL,
-  Resources_SERVICE_URL: process.env.Resources_SERVICE_URL,
 };
 
+// Check whether the required Auth URL is configured.
 const missingServices = Object.entries(requiredServices)
   .filter(([, url]) => !url)
   .map(([name]) => name);
 
+// Stop startup only if the Auth URL is missing.
 if (missingServices.length > 0) {
   console.error(
     "Missing required environment variables:",
@@ -68,46 +79,66 @@ if (missingServices.length > 0) {
   process.exit(1);
 }
 
-// Auth service: login, signup, logout, etc.
+// AUTH SERVICE
+// Requests to /api/auth are forwarded to the deployed Auth service.
+// Example: /api/auth/login -> Auth service /login
 app.use(
   "/api/auth",
   proxy(process.env.Auth_SERVICE_URL)
 );
 
-// Interview service: protected routes
-app.use(
-  "/api/interview",
-  isAuth,
-  proxyWithHeaders(process.env.Interview_SERVICE_URL)
-);
+// INTERVIEW SERVICE
+// This route will work after Interview_SERVICE_URL is configured
+// and the Interview service is deployed.
+if (process.env.Interview_SERVICE_URL) {
+  app.use(
+    "/api/interview",
+    isAuth,
+    proxyWithHeaders(process.env.Interview_SERVICE_URL)
+  );
+}
 
-// Resume service: protected routes, larger payload support
-app.use(
-  "/api/resume",
-  isAuth,
-  proxyWithHeaders(process.env.Resume_SERVICE_URL, {
-    limit: "21mb",
-  })
-);
+// RESUME SERVICE
+// This route will work after Resume_SERVICE_URL is configured
+// and the Resume service is deployed.
+if (process.env.Resume_SERVICE_URL) {
+  app.use(
+    "/api/resume",
+    isAuth,
+    proxyWithHeaders(process.env.Resume_SERVICE_URL, {
+      limit: "21mb",
+    })
+  );
+}
 
-// Roadmap service: protected routes
-app.use(
-  "/api/roadmap",
-  isAuth,
-  proxyWithHeaders(process.env.Roadmap_SERVICE_URL)
-);
+// ROADMAP SERVICE
+// This route will work after Roadmap_SERVICE_URL is configured
+// and the Roadmap service is deployed.
+if (process.env.Roadmap_SERVICE_URL) {
+  app.use(
+    "/api/roadmap",
+    isAuth,
+    proxyWithHeaders(process.env.Roadmap_SERVICE_URL)
+  );
+}
 
-// Resources service: protected routes
-app.use(
-  "/api/resources",
-  isAuth,
-  proxyWithHeaders(process.env.Resources_SERVICE_URL)
-);
+// RESOURCES SERVICE
+// This route will work after Resources_SERVICE_URL is configured
+// and the Resources service is deployed.
+if (process.env.Resources_SERVICE_URL) {
+  app.use(
+    "/api/resources",
+    isAuth,
+    proxyWithHeaders(process.env.Resources_SERVICE_URL)
+  );
+}
 
-// Current user/session validation
+// CURRENT USER
+// Validates the current session and returns the user information.
 app.get("/api/me", isAuth, getCurrentUser);
 
-// CORS and other error handling
+// Centralized error handler.
+// Handles CORS and other Express middleware errors.
 app.use((err, req, res, next) => {
   console.error("Gateway error:", err.message);
 
@@ -128,7 +159,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// Start the Gateway on the Render-provided port or local port 8000.
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Fail7Fly.AI Gateway running on port ${PORT}`);
+  console.log(`Fail7Fly.AI Gateway is running on port ${PORT}`);
 });
