@@ -2,12 +2,24 @@
 import express from "express";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import { connectDB } from "./configs/db.js";
 import authRouter from "./routes/auth.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 6000;
+
+// CORS configuration
+app.use(
+  cors({
+    origin: [
+      "https://fail7-fly-ai.vercel.app",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+  })
+);
 
 // Middleware
 app.use(express.json());
@@ -31,7 +43,7 @@ async function startServer() {
     console.log("Connected to MongoDB");
 
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Auth service is running on port ${PORT}`);
+      console.log(`Auth service is running on port ${ PORT } `);
     });
   } catch (error) {
     console.error("Failed to start Auth Service:", error.message);
